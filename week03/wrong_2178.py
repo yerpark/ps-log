@@ -1,7 +1,7 @@
 #인접 -> 상하좌우만 가능
-#bfs의 기본 적용
-#경로 전체 저장 X implicit way로
-#현재 방문 노드와 거리를 큐에 저장하고, 방문 여부는 visited 배열로 관리
+#bfs의 기본적인 걸 적용 예정
+    #경로를 큐에 넣고 마지막에서 꺼내서 탐색
+    #나중에 최단거리큐를 구하기 
 
 import sys
 from collections import deque
@@ -21,15 +21,15 @@ if __name__ == "__main__":
         arr.append(tmp)
     
     myQueue = deque()
-    myQueue.append([0, 0, 1])
-    visited = [[False] * m for _ in range(n)]
-    visited[0][0] = True
-
+    myQueue.append([[0, 0]])
+    completePath = None
+    
     while (len(myQueue) != 0):
-        curr = myQueue.popleft()
+        path = myQueue.popleft()
+        curr = path[-1]
 
         if (curr[0] == n - 1 and curr[1] == m - 1):
-            print(curr[2])
+            completePath.append(path)
             break
 
         for i in range(4):
@@ -39,9 +39,16 @@ if __name__ == "__main__":
             if (nr < 0 or nr > n - 1 or nc < 0 or nc > m - 1):
                 continue
             
-            if (visited[nr][nc] == True):
+            if ([nr, nc] in path):
                 continue
 
             if (arr[nr][nc] == 1):
-                visited[nr][nc] = True
-                myQueue.append([nr, nc, curr[2] + 1])
+                tmpPath = list(path)
+                tmpPath.append([nr, nc])
+                myQueue.append(tmpPath)
+    
+    minLen = n * m + 1
+    for path in completePath:
+        minLen = min(len(path), minLen)
+
+    print(minLen)
