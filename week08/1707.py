@@ -1,0 +1,42 @@
+import sys
+
+if __name__ == "__main__":
+    k = int(sys.stdin.readline().strip())
+
+    for _ in range(k):
+        v, e = map(int, sys.stdin.readline().split())
+        adjList = { i:[] for i in range(1, v + 1) }
+        listIdx = [-1] * (v + 1) #초기화 번호를 -1로 지정 
+        flag = False
+        myStack = []
+
+        for _ in range(e):
+            start, dest = map(int, sys.stdin.readline().split())
+            adjList[start].append(dest)
+            adjList[dest].append(start)
+
+        for i in range(1, v + 1):
+            if listIdx[i] == -1:
+                myStack.append(i)
+
+                while myStack and flag == False:
+                    cur = myStack.pop()
+
+                    if listIdx[cur] == -1:
+                        listIdx[cur] = 1
+
+                    for dest in adjList[cur]:
+                        newIdx = (listIdx[cur] + 1) % 2
+                        if listIdx[dest] == -1:
+                            listIdx[dest] = newIdx
+                            myStack.append(dest)
+                        elif listIdx[dest] != newIdx:
+                            flag = True
+                            break
+                if flag:
+                    break
+
+        if (flag == True):
+            print("NO")
+        else:
+            print("YES")
